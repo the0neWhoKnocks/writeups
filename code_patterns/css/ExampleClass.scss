@@ -1,0 +1,22 @@
+$namespace: '.example-class';
+
+#{$namespace} {
+  
+  &__container {
+    display: inline-block;
+  }
+  
+  &__nav {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    
+    &-item {
+      
+      &${$namespace}--is-logout {
+        font-weight: bold;
+        color: #008000;
+      }
+    }
+  }
+}
