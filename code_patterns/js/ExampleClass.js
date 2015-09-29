@@ -1,4 +1,4 @@
-//import '/path/to/styles.css';
+//import '/path/to/ExampleClass.css';
 //import '/path/to/ExampleTemplate.hbs';
 //import '/path/to/extra/code.js';
 
@@ -17,11 +17,17 @@ class ExampleClass {
      */
     this.jsPrefix = '.js-'+ this.namespace;
     /**
+     * Each CSS class is prefixed per the Class so as
+     * not to conflict with any other styling on the page.
+     * @type {String}
+     */
+    this.cssClassPrefix = 'example-class__';
+    /**
      * Each CSS modifier is prefixed per the Class so as
      * not to conflict with any other styling on the page.
      * @type {String}
      */
-    this.cssPrefix = 'example-class';
+    this.cssModifierPrefix = 'example-class--';
     /**
      * Namespace Events so that Class specific event bindings
      * can be enabled/disabled at once, and to aid in debugging.
@@ -53,7 +59,7 @@ class ExampleClass {
      * @type {Object}
      */
     this.cssModifiers = {
-      //IS_HIDDEN : this.cssPrefix +'--is-hidden',
+      //IS_HIDDEN : this.cssModifierPrefix +'is-hidden',
     };
     /**
      * A map of commonly used DOM elements.
@@ -61,6 +67,7 @@ class ExampleClass {
      */
     this.els = {
       //$name: $(this.selectors.NAME),
+      //name: document.querySelector(this.selectors.NAME),
     };
     /**
      * A map of event types used by the Class.
@@ -80,7 +87,7 @@ class ExampleClass {
    */
   init(){
     var _self = this;
-    appTools.log( _self.logPrefix +'Initializing' );
+    console.log( _self.logPrefix +'Initializing' );
 
 
   }

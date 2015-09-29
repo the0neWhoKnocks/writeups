@@ -13,7 +13,7 @@ $namespace: '.example-class';
     
     &-item {
       
-      &${$namespace}--is-logout {
+      &#{$namespace}--is-logout {
         font-weight: bold;
         color: #008000;
       }
