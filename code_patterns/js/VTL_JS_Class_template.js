@@ -19,11 +19,17 @@ class ${NAME} {
      */
     this.jsPrefix = '.js-'+ this.namespace;
     /**
+     * Each CSS class is prefixed per the Class so as
+     * not to conflict with any other styling on the page.
+     * @type {String}
+     */
+    this.cssClassPrefix = '${CSS_PREFIX}__';
+    /**
      * Each CSS modifier is prefixed per the Class so as
      * not to conflict with any other styling on the page.
      * @type {String}
      */
-    this.cssPrefix = '${CSS_PREFIX}';
+    this.cssModifierPrefix = '${CSS_PREFIX}--';
     /**
      * Namespace Events so that Class specific event bindings
      * can be enabled/disabled at once, and to aid in debugging.
