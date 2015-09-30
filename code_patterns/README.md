@@ -7,7 +7,7 @@ new devs and a fundamental understanding of what's going on in the codebase.
 
 ---
 
-## Markup
+## Markup (HTML)
 
 Everything stems from the markup, so we'll start with that. You can write all
 your markup in straight HTML, but using a templating system makes thing much
@@ -20,7 +20,7 @@ You'll notice for things like `{{#each` or `{{#if` helpers I keep them at the
 same spacing as their parent. I've found this to be easier to visually consume
 since a child node has the same indentation that it normally would.
 
-```
+```handlebars
 <ul class="{{cssPrefix}}__nav-list">
 {{#each navURLs}}
   <li class="{{../cssPrefix}}__nav-item"><a href="{{url}}">{{label}}</a></li>
@@ -31,7 +31,7 @@ since a child node has the same indentation that it normally would.
 For nodes with attributes containing a lot of data, it's best to drop the attributes
 down to their own line for easier reading/editing.
 
-```
+```handlebars
 <a 
   class="{{../cssClassPrefix}}nav-item {{../cssModifierPrefix}}is-logout {{../jsPrefix}}NavItem {{../jsPrefix}}LogOutItem" 
   href="{{user.logoutURL}}"
@@ -44,13 +44,30 @@ the content. This wasn't an issue in html4, but in html5 if you have an item
 display as `inline-block` you may find leading or trailing space before or after 
 an element.
 
-```
+```handlebars
 >{{user.logoutLabel}}</a>
 ```
 
+Referencing the anchor markup above, you'll see we have a separation of style 
+and interaction in the form of a CSS prefixed class and a JS prefixed class.
+This does a couple things for us. One, it allows us to change the CSS class
+name if a refactor is required without the added worry of breaking any JS
+interactions. And two, it tells us that the DOM node is being utilized by JS 
+for some sort of interaction. There is no need to add a JS class to a node 
+unlesss it's being used by JS, just like there's no need to add a CSS class 
+to a node unless it's being styled.
+
+Another thing to note is the naming convention of the CSS & JS classes.
+
+**CSS** - Words will be separated by hyphens. `namespace__name-of-class`
+
+**JS** - The class will be prefixed by `js-` and words will be treated like a 
+JS variable to further set it apart from a class utilized for styling. 
+`js-namespaceNameOfClass`
+
 ---
 
-## Styling
+## Styling (CSS)
 
 I've found a modified BEM syntax works well for our environment. The modification
 in our case is keeping the Element & Modifiers separate. Using this style removes
@@ -58,7 +75,7 @@ a majority of specificity and gives developers confidence that they're not going
 to inadvertently alter other components on the page when editing CSS.
 
 My preferred pre-processor is [Stylus](https://learnboost.github.io/stylus/), but
-we use SCSS at my job. So you can reference [this file](css/ExampleClass.scss) 
+we use [SCSS](http://sass-lang.com/) at my job. So you can reference [this file](css/ExampleClass.scss) 
 for the below examples.
 
 Setting up a file in the manor I've done takes a little extra thought, but as
@@ -67,7 +84,7 @@ built out dynamically. There was an argument that it made it harder to find a
 specific class such as `.namespace__some-element` because it's actually broken
 out into something like below.
 
-```
+```scss
 #{$namespace} {
   
   &__some-element {
@@ -86,7 +103,7 @@ you may be trying to achieve.
 
 You'll also notice from the example above, the blank newline after the namespace.
 
-```
+```scss
 #{$namespace} {
   
   &__some-element {
@@ -96,7 +113,7 @@ There should always be a blank line before a nested rule, even if the parent
 rule doesn't have any styling assigned. So if there was styling assigned to the
 parent element, the above styling would look like this.
 
-```
+```scss
 #{$namespace} {
   color: #00FF00;
   
@@ -116,13 +133,91 @@ modifier from another component.
 
 ---
 
-## Interactions
+## Interactions (Javascript)
 
 For javascript, [the example I've included](js/ExampleClass.js) uses ES6, but 
-can easily be translated to the ES5 prototypical Class pattern.
+can easily be translated to the ES5 prototypical Class pattern. You'll see in
+the example that jQuery is utilized for DOM manipulation. Vanilla JS can be
+used to achieve a majority of what I cover. If it can't I'll show how it
+should be handled with a jQuery/vanilla comparison.
 
-A handy trick when dealing with Events in JS (when utilizing jQuery) is to
-namespace your events. This allows for easier debugging of what's bound on an
+Going forward whenever I refer to `module` it'll be synonymous with
+Class, plugin, component, widget, and of course module.
+
+
+#### Extensibility
+
+When creating a module you'll want to make sure it's extensible and it's easy
+for a dev to override properties or methods. I can't count how many times I've
+tried to implmement a module and there's been an inaccesible property or
+method that bascially causes us to deviate from the base code just to get an
+experience to work, which in turn leads to code disparity.
+
+In the code example you'll see the module allows for an `opts` (or options)
+argument. All default module properties are set, and then overridden by the
+`opts` via `Object.assign(this, opts);`. `Object.assign` is new to ES6,
+you can use a recursive loop, jQuery's `extend`, or lodashes `merge` to
+accomplish the same result.
+
+
+#### Documentation
+
+There's no hard rule as to when you should document your code, but I'll give you 
+an example of my flow. When creating a new function I'd come up with a symantic 
+name for it, and then outline what I want the function to do with inner comments.
+
+```javascript
+function makeHamburger(order){
+  // place bun on plate
+  
+  // add ingredients
+  
+  // put a bird on it
+}
+```
+
+After you've fleshed out the inner workings of your new method, and things
+are working as expected, I'd then go and add the method [documentation](http://usejsdoc.org/).
+I do this at the end of the flow since things will get changed as you're
+figuring things out, and you don't want to spend extra time re-writing
+your docs.
+
+```javascript
+/**
+ * This method makes a hamburger. I'm obviously hungry during the time
+ * of writing this.
+ *
+ * @param {Object} baseOrder - The basic stuff like type of bun, cook of the burger, etc.
+ * @param {Array} extras - Extra ingredients you want added.
+ */
+function makeHamburger(baseOrder, extras){
+  var burgerFixins = '';
+  var i;
+  
+  // add the basics
+  for( i in baseOrder ){
+    if( baseOrder.hasOwnProperty(i) ){
+      if( baseOrder[i] ){
+        burgerFixins += i +'|';
+      }
+    }
+  }
+  
+  // add ingredients
+  for( i=0; i<extras.length; i++ ){
+    burgerFixins += extras[i] +'|';
+  }
+  
+  // add bun
+  return 'top bun|'+ burgerFixins +'btm bun';
+}
+```
+
+
+#### Events
+
+A handy trick while dealing with Events (when utilizing jQuery) is to 
+namespace them. This allows for easier debugging of what's bound on an
 element, and you can more confidently kill all of your events on an element
 without worrying about breaking any other experiences added by someone else. If
 you're not using jQuery, you'll have to be more diligent in the manor in which
@@ -130,19 +225,20 @@ you remove listeners from an element.
 
 **jQuery**
 
-```
+```javascript
 // add listeners
-$('.js-someElement').on(this.events.CLICK, function(ev){});
+var $els = $('.js-someElement');
+$els.on(this.events.CLICK, function(ev){});
 
 // remove specific listener
-$('.js-someElement').off(this.events.CLICK);
+$els.off(this.events.CLICK);
 // remove all plugin listeners
-$('.js-someElement').off(this.eventSuffix);
+$els.off(this.eventSuffix);
 ```
 
 **vanilla**
 
-```
+```javascript
 // add listeners
 var func = function(ev){};
 var els = document.querySelectorAll('.js-someElement');
@@ -155,6 +251,113 @@ for(var i=0; i<els.length; i++){
   el[0].removeEventListener('click', func);
 }
 ```
+
+
+#### Dynamic Variables
+
+You'll see a chunk of code in the example file containing this code.
+
+```javascript
+this.namespace = 'exampleClass';
+
+this.jsPrefix = '.js-'+ this.namespace;
+
+this.cssClassPrefix = 'example-class__';
+
+this.cssModifierPrefix = 'example-class--';
+
+this.eventSuffix = '.'+ this.namespace;
+```
+
+What does something like this give us? There have been times in the
+past where myself & others have made the simple mistake of not adding
+a `.` for JS selectors, or adding a `.` for CSS classes and waisting
+time trying to figure out why an experience isn't functioning as expected.
+Setting up prefixes & suffixes allows us to then do something like this.
+
+```javascript
+this.selectors = {
+  NAV_ITEM: this.jsPrefix +'NavItem',
+};
+
+this.cssModifiers = {
+  IS_HIDDEN: this.cssModifierPrefix +'is-hidden',
+};
+
+this.events = {
+  CLICK: 'click'+ this.eventSuffix
+};
+
+this.els = {
+  $navItems: $(this.selectors.NAV_ITEM)
+};
+```
+
+There are a few key take-aways from the code snippet above.
+
+**Name Propagation** - Lets say a refactor occurs and you change a piece
+of markup to something different. For example the `nav-item`'s become `ui-item`'s.
+The markup would then look like this after the refactor.
+
+```handlebars
+<a class="{{../cssClassPrefix}}ui-item {{../jsPrefix}}UIItem" href="{{url}}">{{label}}</a>
+```
+
+The CSS would change to this
+
+```scss
+&__ui {
+  ...
+  
+  &-item
+```
+
+And the JS would change to this
+
+```javascript
+this.selectors = {
+  UI_ITEM: this.jsPrefix +'UIItem',
+};
+
+this.els = {
+  $uiItems: $(this.selectors.UI_ITEM)
+};
+
+// You'd also want to do a search and replace for `els.$navItems`
+```
+
+The argument could be made "well I could just do a search and
+replace in all the files for the class I updated", and you'd
+be correct. The power in this schema is the knowledge of where
+items are that need to be updated a limitation on possible typos
+leading to bugs. There have been times in the past where people have 
+done some fairly tricky things with selectors, and after a refactor 
+those tricky selectors weren't updated and bugs arose. There's no real 
+extra thought required with this schema, the dev will know they'll have 
+to update it once in CSS, once in the template, a couple places in JS, 
+and a few areas in any tests.
+
+You may be asking, "where's the propagation in Name Propagation?". In
+the example above I mentioned updating the JS selector property name.
+So from `NAV_ITEM` to `UI_ITEM`. You don't actually have to change the
+constants name (it's more consistent if you do), but you could simply change
+it to `NAV_ITEM: this.jsPrefix +'UIItem'` and everything else will continue
+to function as expected.
+
+
+**Property Casing** - I've seen a variation of casing when it comes to
+variables so here's a simple question to ask yourself when naming something.
+
+> "Is the content of my variable going to change?"
+
+If not then use all caps cuz that variable is a constant. Otherwise, it's JS,
+and in JS we camelcase the variable. Also, you could make the argument that
+`this.selectors` should be `this.SELECTORS`. I try to keep it simple when it 
+comes to constants, basically a constant is a variable with one unchanging value. 
+So since `selectors` contains multiple values I keep it in lowercase, and the 
+same would apply to Arrays.
+
+
 
 ---
 
