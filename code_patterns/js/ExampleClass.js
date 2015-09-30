@@ -45,29 +45,28 @@ class ExampleClass {
      * @type {Object}
      */
     this.templates = {
-      //EXAMPLE_TEMPLATE: Handlebars.templates.ExampleTemplate,
+      EXAMPLE_TEMPLATE: Handlebars.templates.ExampleTemplate,
     };
     /**
      * A map of JS selectors used to access the DOM.
      * @type {Object}
      */
     this.selectors = {
-      //SELECTOR_NAME : this.jsPrefix +'SelectorName',
+      NAV_ITEM: this.jsPrefix +'NavItem',
     };
     /**
      * A map of CSS modifiers used to alter the DOM.
      * @type {Object}
      */
     this.cssModifiers = {
-      //IS_HIDDEN : this.cssModifierPrefix +'is-hidden',
+      //IS_HIDDEN: this.cssModifierPrefix +'is-hidden',
     };
     /**
      * A map of commonly used DOM elements.
      * @type {Object}
      */
     this.els = {
-      //$name: $(this.selectors.NAME),
-      //name: document.querySelector(this.selectors.NAME),
+      // anything that may already be on the page
     };
     /**
      * A map of event types used by the Class.
@@ -88,7 +87,19 @@ class ExampleClass {
   init(){
     var _self = this;
     console.log( _self.logPrefix +'Initializing' );
-
-
+    
+    // cache all elements that will be used by this Class
+    this.els.$shell = $(this.templates.EXAMPLE_TEMPLATE({
+      cssClassPrefix: this.cssClassPrefix,
+      jsPrefix: this.jsPrefix.replace('.', ''),
+      navURLs: [
+        {
+          url: 'http://example.com',
+          label: 'Example'
+        }
+      ]
+    }));
+    this.els.$navItems = this.els.$shell.find( this.selectors.NAV_ITEM );
+    
   }
 }
