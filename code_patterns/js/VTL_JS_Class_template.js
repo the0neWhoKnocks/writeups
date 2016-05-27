@@ -41,7 +41,7 @@ class ${NAME} {
      * other logging on the page.
      * @type {String}
      */
-    this.logPrefix = '[ ${NAME} ] ';
+    this.LOG_PREFIX = '[ ${NAME} ] -';
     /**
      * A map of templates used by the Class.
      * @type {Object}
@@ -61,7 +61,7 @@ class ${NAME} {
      * @type {Object}
      */
     this.cssModifiers = {
-      //IS_HIDDEN : this.cssPrefix +'--is-hidden',
+      //IS_HIDDEN : this.cssModifierPrefix +'is--hidden',
     };
     /**
      * A map of commonly used DOM elements.
@@ -88,7 +88,7 @@ class ${NAME} {
    */
   init(){
     var _self = this;
-    appTools.log( _self.logPrefix +'Initializing' );
+    appTools.log( _self.LOG_PREFIX, 'Initializing' );
 
 
   }
