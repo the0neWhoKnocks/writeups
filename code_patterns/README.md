@@ -20,10 +20,19 @@ You'll notice for things like `{{#each` or `{{#if` helpers I keep them at the
 same spacing as their parent. I've found this to be easier to visually consume
 since a child node has the same indentation that it normally would.
 
+Note that in the snippets below, these are the the values of the referenced
+props from [ExampleClass.js](js/ExampleClass.js).
+
+```
+jsPrefix = 'js-exampleClass'
+cssClassPrefix = 'example-class__'
+cssModifierPrefix = 'example-class--'
+```
+
 ```handlebars
-<ul class="{{cssPrefix}}__nav-list">
+<ul class="{{cssClassPrefix}}__nav-list">
 {{#each navURLs}}
-  <li class="{{../cssPrefix}}__nav-item"><a href="{{url}}">{{label}}</a></li>
+  <li class="{{../cssClassPrefix}}__nav-item"><a href="{{url}}">{{label}}</a></li>
 {{/each}}
 </ul>
 ```
@@ -33,7 +42,7 @@ down to their own line for easier reading/editing.
 
 ```handlebars
 <a 
-  class="{{../cssClassPrefix}}nav-item {{../cssModifierPrefix}}is-logout {{../jsPrefix}}NavItem {{../jsPrefix}}LogOutItem" 
+  class="{{../cssClassPrefix}}nav-item {{../cssModifierPrefix}}is--logout {{../jsPrefix}}NavItem {{../jsPrefix}}LogOutItem" 
   href="{{user.logoutURL}}"
 >{{user.logoutLabel}}</a>
 ```
@@ -59,11 +68,24 @@ to a node unless it's being styled.
 
 Another thing to note is the naming convention of the CSS & JS classes.
 
-**CSS** - Words will be separated by hyphens. `namespace__name-of-class`
+**CSS**
 
-**JS** - The class will be prefixed by `js-` and words will be treated like a 
-JS variable to further set it apart from a class utilized for styling. 
-`js-namespaceNameOfClass`
+Utilizes a modified BEM sytax. `namespace` is the component name so
+something like `chat-module`. `name-of-class` would be the current element,
+something like `cta-btn`. Combined they'd be `chat-module__cta-btn`. Ideally
+you'll only have one level per class. A level is defined by the two underscores.
+
+For modifiers (classes that describe the state of an element), the format would
+be `verb--adjective` or `namespace--verb--adjective` (depending on whether or 
+not you have global modifiers setup that you don't want to conflict with). Some
+examples would be `is--hidden`, `has--error`, or `was--successful`.
+
+**JS**
+
+The class will be prefixed by `js-` and words will be treated like a JS variable 
+to further set it apart from a class utilized for styling `js-namespaceNameOfClass`.
+Using the class from the CSS example above, it's JS equivalent would be
+`js-chatModuleCtaBtn`.
 
 ---
 
@@ -120,16 +142,17 @@ parent element, the above styling would look like this.
   &__some-element {
 ```
 
-Modifiers are used to describe an experience state of an element. Modifiers are
-the only thing JS should be adding or removing during a user session. So classes,
-anything following this syntax `.namespace__element` are for base styling. And
-anything following this syntax `.namespace--some-description` are a modifier
-describing a modified state of an element.
+Modifiers are used to describe the state of an element. Modifiers are the only 
+thing JS should be adding or removing during a user session. So classes,
+anything following this syntax `.namespace__element` are for base styling. 
+Anything following this syntax `.namespace--verb--adjective` are a modifier
+describing the state of an element.
 
 For modifiers it's best to use at least a two word descriptor. Something along
-the lines of `.namespace--is-hidden` or `.namespace--has-children`. The only purpose
-`.namespace` serves in this case is to ensure that it doesn't conflict with another
-modifier from another component.
+the lines of `.namespace--is--hidden` or `.namespace--has--no-children`. The only 
+purpose `.namespace` serves in this case is to ensure that it doesn't conflict 
+with another modifier from another component. Take note that the adjective only
+uses one hyphen for word separation.
 
 ---
 
@@ -142,7 +165,7 @@ used to achieve a majority of what I cover. If it can't I'll show how it
 should be handled with a jQuery/vanilla comparison.
 
 Going forward whenever I refer to `module` it'll be synonymous with
-Class, plugin, component, widget, and of course module.
+Class, plugin, component, or widget.
 
 
 #### Extensibility
@@ -184,8 +207,7 @@ your docs.
 
 ```javascript
 /**
- * This method makes a hamburger. I'm obviously hungry during the time
- * of writing this.
+ * This method makes a hamburger. I'm obviously hungry while writing this.
  *
  * @param {Object} baseOrder - The basic stuff like type of bun, cook of the burger, etc.
  * @param {Array} extras - Extra ingredients you want added.
@@ -213,6 +235,50 @@ function makeHamburger(baseOrder, extras){
 }
 ```
 
+I find a separation of code easier to visually parse. By that I mean, 
+vars (newline), logic (newline), & functions (in that order). The comments in
+the below example are just for the example and are not required.
+
+Vars with defined values should be at the top on their own line and undefined 
+vars should be at the bottom and can be placed on one line.
+
+First off I subscribe to space in the `if` parenthesis rather than outside. The
+reason for that is because this `if( fu(bar()) ){` is easier to read and
+less error prone than this `if (fu(bar())) {`. There are multiple ways to write 
+`if` statements, and the reasons as to why are called out below. 
+
+```javascript
+// == vars ==========================
+
+var fu = opts.fu || 'bar';
+var bar = opts.bar || 'fu';
+var boom = opts.boom || 'splat';
+var num, num2, num3;
+
+// == logic =========================
+
+// No braces required because only one thing occurs.
+if( fu === '' ) fu = bar;
+// Braces required because multiple commands are run.
+if( !bar ){
+  errorCallback();
+  return false;
+}
+// New line for each logical check for readability.
+if(
+  !firstCheck()
+  && !someCheck()
+  && (!anotherCheck() || followingCheck())
+){
+  errorCallback();
+  return false;
+}
+
+// == functionality =================
+
+successCallback();
+```
+
 
 #### Events
 
@@ -220,7 +286,7 @@ A handy trick while dealing with Events (when utilizing jQuery) is to
 namespace them. This allows for easier debugging of what's bound on an
 element, and you can more confidently kill all of your events on an element
 without worrying about breaking any other experiences added by someone else. If
-you're not using jQuery, you'll have to be more diligent in the manor in which
+you're not using jQuery, you'll have to be more diligent in the manner in which
 you remove listeners from an element.
 
 **jQuery**
@@ -281,7 +347,7 @@ this.selectors = {
 };
 
 this.cssModifiers = {
-  IS_HIDDEN: this.cssModifierPrefix +'is-hidden',
+  IS_HIDDEN: this.cssModifierPrefix +'is--hidden',
 };
 
 this.events = {
@@ -345,8 +411,10 @@ it to `NAV_ITEM: this.jsPrefix +'UIItem'` and everything else will continue
 to function as expected.
 
 
-**Property Casing** - I've seen a variation of casing when it comes to
-variables so here's a simple question to ask yourself when naming something.
+**Property Casing**
+
+I've seen a variation of casing when it comes to variables so here's a simple 
+question to ask yourself when naming something.
 
 > "Is the content of my variable going to change?"
 
@@ -357,10 +425,98 @@ comes to constants, basically a constant is a variable with one unchanging value
 So since `selectors` contains multiple values I keep it in lowercase, and the 
 same would apply to Arrays.
 
+When it comes to the naming & casing of props in `els`, the leading `$` is used
+to denote that it's a jQuery element, and the variable name is camelcase because
+jQuery Objects are inherently dynamic.
 
 
 ---
 
+
+## Template Helpers
+
+A pattern I follow when it comes to block helpers is to set data attributes when 
+adding data to a context. This helps a developer know right away that the 
+property in question was added via a helper and not possibly through a service 
+or backend processing. An example of that can be seen in [helpers.js](js/helpers.js)
+
+Then in your template you'd reference the custom attribute like so
+
+```
+<div data-build-for="{{@customProp}}"
+```
+
+The `@` symbol being the key difference here.
+
+
+---
+
+
 ## Testing
 
+When writing tests you'll want to ensure that you reset any base vars that may
+have been set via a bootstrap file, if you've altered them. If you don't, tests 
+that were previously passing, may now start to fail.
 
+Use `.should.equal(VAL)` for simple values like Strings, Booleans, or Numbers.
+
+Use `.should.deepEqual(OBJ)` for Objects or Arrays.
+
+Sometimes you want to verify that something is `null` or `undefined`, in that
+case you'd use `expect( func('fu') ).to.be.undefined`.
+
+Use a `spy` when:
+- You want to check if a function is called.
+```
+var funcSpy = sandbox.spy(className, 'func');
+...
+funcSpy.should.be.called;
+// or
+funcSpy.should.be.calledWith(arg, arg2);
+```
+
+Use a `stub` when:
+- You want to check if a function is called.
+- You don't want a function to actually execute.
+- The function doesn't exist in your current scope and you don't want to deal
+with the setup of that function.
+```
+var funcStub = sandbox.stub(className, 'func', function(){
+  return true;
+});
+...
+funcStub.should.be.called;
+// or
+funcStub.should.be.calledWith(arg, arg2);
+```
+
+There are times with `spy`'s or `stub`'s that you want to ensure a function call
+has a specific signature, but the args may be dynamic. In those cases you'll
+use the [match API](http://sinonjs.org/docs/#matchers).
+```
+funcStub.should.be.calledWith(sinon.match.string, sinon.match.func);
+```
+
+Sometimes you need to travel forward in time like when `setTimeout` is used. In 
+that case you'll want to use the [clock API](http://sinonjs.org/docs/#clock).
+```
+beforeEach(function(){
+  sandbox.clock = sinon.useFakeTimers();
+});
+
+afterEach(function(){
+  sandbox.clock.restore();
+});
+
+...
+
+  someFunc();
+  sandbox.clock.tick(500);
+  
+  callbackSpy.should.be.called;
+```
+
+If you want to skip something from running you can add `.skip` to either a
+`describe` or an `it`.
+
+If you want to run just one test you can add `.only` to a `describe` or an `it`.

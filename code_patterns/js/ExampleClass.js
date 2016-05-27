@@ -39,7 +39,7 @@ class ExampleClass {
      * other logging on the page.
      * @type {String}
      */
-    this.logPrefix = '[ ExampleClass ] ';
+    this.LOG_PREFIX = '[ ExampleClass ] -';
     /**
      * A map of templates used by the Class.
      * @type {Object}
@@ -59,7 +59,7 @@ class ExampleClass {
      * @type {Object}
      */
     this.cssModifiers = {
-      //IS_HIDDEN: this.cssModifierPrefix +'is-hidden',
+      IS_HIDDEN: this.cssModifierPrefix +'is--hidden',
     };
     /**
      * A map of commonly used DOM elements.
@@ -73,7 +73,7 @@ class ExampleClass {
      * @type {Object}
      */
     this.events = {
-      //CLICK: 'click'+ this.eventSuffix
+      CLICK: 'click'+ this.eventSuffix
     };
 
     // override defaults with user opts
@@ -86,7 +86,7 @@ class ExampleClass {
    */
   init(){
     var _self = this;
-    console.log( _self.logPrefix +'Initializing' );
+    console.log( _self.LOG_PREFIX, 'Initializing' );
     
     // cache all elements that will be used by this Class
     this.els.$shell = $(this.templates.EXAMPLE_TEMPLATE({
@@ -100,6 +100,5 @@ class ExampleClass {
       ]
     }));
     this.els.$navItems = this.els.$shell.find( this.selectors.NAV_ITEM );
-    
   }
 }
