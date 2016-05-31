@@ -1,8 +1,8 @@
 # Code Grammar
 
 I work in a large corparate environment with a lot of moving parts. During my
-years there I've come up with a workflow when dealing with JS & CSS that allows
-for quick iteration, and semantic naming which allows for quick spin up time for 
+years there a workflow was developed when dealing with HTML, JS & CSS that allows
+for quick iteration, and easy extensibility which allows for quick spin up time for 
 new devs and a fundamental understanding of what's going on in the codebase.
 
 ---
@@ -14,7 +14,7 @@ your markup in straight HTML, but using a templating system makes thing much
 easier to manage and update in the future. For this example I'll be using
 Handlebars for our templating engine.
 
-In this section I'll be referring to excerpts from [ExampleTemplate.hbs](view/ExampleTemplate.hbs)
+In this section I'll be referring two excerpts from [ExampleTemplate.hbs](view/ExampleTemplate.hbs)
 
 You'll notice for things like `{{#each` or `{{#if` helpers I keep them at the
 same spacing as their parent. I've found this to be easier to visually consume
@@ -57,8 +57,8 @@ an element.
 >{{user.logoutLabel}}</a>
 ```
 
-Referencing the anchor markup above, you'll see we have a separation of style 
-and interaction in the form of a CSS prefixed class and a JS prefixed class.
+Referencing the anchor markup above, you'll see we have a **separation of style 
+and interaction** in the form of a CSS prefixed class and a JS prefixed class.
 This does a couple things for us. One, it allows us to change the CSS class
 name if a refactor is required without the added worry of breaking any JS
 interactions. And two, it tells us that the DOM node is being utilized by JS 
@@ -235,9 +235,9 @@ This is a point of contention in some circles. Simply put, to write logic, use
 logic. Matches can start a fire that cooks your dinner, or they can burn a
 house down, think and be responsible.
 
-**Ternary**
+#### Ternary
 
-Use a ternary when you need to set one value based on some logic. If multiple
+Use a ternary when you need to set **one value** based on some logic. If multiple
 values need to be set or functions need to be called, use an `if`.
 
 ```javascript
@@ -254,7 +254,7 @@ var currVal = (val2 && ((fu) ? bar : ((val && val2) ? bar : fu)))
   : val;
 ```
 
-**Switch**
+#### Switch
 
 Use a `switch` when you're checking one prop for one value, it's cleaner and
 processes faster.
@@ -332,14 +332,14 @@ function makeHamburger(baseOrder, extras){
 }
 ```
 
-I find a separation of code easier to visually parse. By that I mean, 
+A separation of code is easier to visually parse. By that I mean, 
 vars (newline), logic (newline), & functions (in that order). The comments in
 the below example are just for the example and are not required.
 
 Vars with defined values should be at the top on their own line and undefined 
 vars should be at the bottom and can be placed on one line.
 
-First off I subscribe to space in the `if` parenthesis rather than outside. The
+I subscribe to space in the `if` parenthesis rather than outside. The
 reason for that is because this `if( fu(bar()) ){` is easier to read and
 less error prone than this `if (fu(bar())) {`. There are multiple ways to write 
 `if` statements, and the reasons as to why are called out below. 
@@ -508,7 +508,7 @@ it to `NAV_ITEM: this.jsPrefix +'UIItem'` and everything else will continue
 to function as expected.
 
 
-**Property Casing**
+#### Property Casing
 
 I've seen a variation of casing when it comes to variables so here's a simple 
 question to ask yourself when naming something.
