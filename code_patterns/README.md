@@ -2,7 +2,7 @@
 
 I work in a large corparate environment with a lot of moving parts. During my
 years there I've come up with a workflow when dealing with JS & CSS that allows
-for quick iteration, and symantic naming which allows for quick spin up time for 
+for quick iteration, and semantic naming which allows for quick spin up time for 
 new devs and a fundamental understanding of what's going on in the codebase.
 
 ---
@@ -182,11 +182,108 @@ argument. All default module properties are set, and then overridden by the
 you can use a recursive loop, jQuery's `extend`, or lodashes `merge` to
 accomplish the same result.
 
+#### Semantics
+
+Make you're code easy to understand with semantic method and variable names. For
+example, if you have a function that starts a countdown.
+
+```javascript
+function startCountDown(){
+```
+
+Or if you have a variable that stores a user's score.
+
+```javascript
+var userScore = 0;
+```
+
+Seems like real simple stuff but I still come across things like
+
+```javascript
+var uS = 0;
+
+// or
+
+function sCD(){
+```
+
+without comments or any info about what the variable or function does, which of
+course does nothing to help a dev understand what's going on at a cursory glance,
+which in turn leads to wasted time for a dev.
+
+Another good habit to get into is to prefix your handlers with `handle` so a dev
+knows that a function is wired up to an event.
+
+```javascript
+function handleCtaClick(ev){}
+...
+$('.el').on('click', handleCtaClick);
+
+// or
+
+function handleUserLogin(resp){}
+...
+$.ajax({
+  ...
+  success: handleUserLogin
+});
+```
+
+#### Logic
+
+This is a point of contention in some circles. Simply put, to write logic, use
+logic. Matches can start a fire that cooks your dinner, or they can burn a
+house down, think and be responsible.
+
+**Ternary**
+
+Use a ternary when you need to set one value based on some logic. If multiple
+values need to be set or functions need to be called, use an `if`.
+
+```javascript
+// Good (one level deep)
+var loggedIn = (user) ? true : false;
+// or (wrap lines if value is lengthy)
+var currVal = (val2)
+  ? Math.round(Math.abs(val) - Math.abs(val2))
+  : val;
+
+// Bad (don't nest)
+var currVal = (val2 && ((fu) ? bar : ((val && val2) ? bar : fu)))
+  ? Math.round(Math.abs(val) - Math.abs(val2))
+  : val;
+```
+
+**Switch**
+
+Use a `switch` when you're checking one prop for one value, it's cleaner and
+processes faster.
+
+```javascript
+// Good
+switch(country){
+  case 'US' :
+    currency = 'USD';
+    break;
+  
+  case 'GB' :
+    currency = 'GBP';
+    break;
+}
+
+// Bad
+if( country === 'US' ){
+  currency = 'USD';
+}else if( country === 'GB' ){
+  currency = 'GBP';
+}
+```
+
 
 #### Documentation
 
 There's no hard rule as to when you should document your code, but I'll give you 
-an example of my flow. When creating a new function I'd come up with a symantic 
+an example of my flow. When creating a new function I'd come up with a semantic 
 name for it, and then outline what I want the function to do with inner comments.
 
 ```javascript
@@ -454,9 +551,34 @@ The `@` symbol being the key difference here.
 
 ## Testing
 
+
+#### General Rules
+
 When writing tests you'll want to ensure that you reset any base vars that may
 have been set via a bootstrap file, if you've altered them. If you don't, tests 
 that were previously passing, may now start to fail.
+
+When writing names for `describe`'s use the name of the Class or method, and
+use single quotes.
+```javascript
+describe('ClassName', function(){
+...
+  describe('setUser', function(){
+```
+
+When writing names for `it`'s write a **general** description of what should happen
+in the method your testing. Use double quotes since you or someone else may use
+an apostrophe in the description.
+```javascript
+// Good
+it("should fire some events and setup a button", function(){
+
+// Bad (because it calls out a specific function name, which could change later)
+it("shouldn't fire functionName", function(){
+```
+
+
+#### Sinon API
 
 Use `.should.equal(VAL)` for simple values like Strings, Booleans, or Numbers.
 
@@ -467,7 +589,7 @@ case you'd use `expect( func('fu') ).to.be.undefined`.
 
 Use a `spy` when:
 - You want to check if a function is called.
-```
+```javascript
 var funcSpy = sandbox.spy(className, 'func');
 ...
 funcSpy.should.be.called;
@@ -480,7 +602,7 @@ Use a `stub` when:
 - You don't want a function to actually execute.
 - The function doesn't exist in your current scope and you don't want to deal
 with the setup of that function.
-```
+```javascript
 var funcStub = sandbox.stub(className, 'func', function(){
   return true;
 });
@@ -493,13 +615,13 @@ funcStub.should.be.calledWith(arg, arg2);
 There are times with `spy`'s or `stub`'s that you want to ensure a function call
 has a specific signature, but the args may be dynamic. In those cases you'll
 use the [match API](http://sinonjs.org/docs/#matchers).
-```
+```javascript
 funcStub.should.be.calledWith(sinon.match.string, sinon.match.func);
 ```
 
 Sometimes you need to travel forward in time like when `setTimeout` is used. In 
 that case you'll want to use the [clock API](http://sinonjs.org/docs/#clock).
-```
+```javascript
 beforeEach(function(){
   sandbox.clock = sinon.useFakeTimers();
 });
