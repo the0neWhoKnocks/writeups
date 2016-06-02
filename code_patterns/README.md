@@ -618,6 +618,13 @@ use the [match API](http://sinonjs.org/docs/#matchers).
 ```javascript
 funcStub.should.be.calledWith(sinon.match.string, sinon.match.func);
 ```
+Or maybe you want to test that it was called with a specific property of an Object.
+```
+// called with the below Object
+var obj = {fu:'bar'};
+
+funcStub.should.be.calledWith(sinon.match.hasOwn('fu', 'bar'));
+```
 
 Sometimes you need to travel forward in time like when `setTimeout` is used. In 
 that case you'll want to use the [clock API](http://sinonjs.org/docs/#clock).
