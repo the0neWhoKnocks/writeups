@@ -68,7 +68,7 @@ to a node unless it's being styled.
 
 Another thing to note is the naming convention of the CSS & JS classes.
 
-**CSS**
+### Markup Styling Classes
 
 Utilizes a modified BEM sytax. `namespace` is the component name so
 something like `chat-module`. `name-of-class` would be the current element,
@@ -80,7 +80,7 @@ be `verb--adjective` or `namespace--verb--adjective` (depending on whether or
 not you have global modifiers setup that you don't want to conflict with). Some
 examples would be `is--hidden`, `has--error`, or `was--successful`.
 
-**JS**
+### Markup Javascript Selectors
 
 The class will be prefixed by `js-` and words will be treated like a JS variable 
 to further set it apart from a class utilized for styling `js-namespaceNameOfClass`.
