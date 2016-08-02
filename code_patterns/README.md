@@ -30,11 +30,24 @@ cssModifierPrefix = 'example-class--'
 ```
 
 ```handlebars
-<ul class="{{cssClassPrefix}}__nav-list">
-{{#each navURLs}}
-  <li class="{{../cssClassPrefix}}__nav-item"><a href="{{url}}">{{label}}</a></li>
+<nav class="{{cssClassPrefix}}nav">
+{{#each navURLs as |$navURL|}}
+  <a class="{{@root.cssClassPrefix}}nav-item {{@root.jsPrefix}}NavItem" href="{{url}}">{{label}}</a>
+  {{#if subItems}}
+    <nav class="{{cssClassPrefix}}sub-nav">
+    {{#each subItems}}
+      <a class="{{@root.cssClassPrefix}}nav-item {{@root.jsPrefix}}NavItem" href="{{$navURL.url}}{{url}}">{{label}}</a>
+    {{/each}}
+    </nav>
+  {{/if}}
 {{/each}}
-</ul>
+{{#if user}}
+  <a 
+    class="{{@root.cssClassPrefix}}nav-item {{@root.cssModifierPrefix}}is--logout {{@root.jsPrefix}}NavItem {{@root.jsPrefix}}LogOutItem" 
+    href="{{user.logoutURL}}"
+  >{{user.logoutLabel}}</a>
+{{/if}}
+</nav>
 ```
 
 For nodes with attributes containing a lot of data, it's best to drop the attributes
@@ -57,6 +70,8 @@ an element.
 >{{user.logoutLabel}}</a>
 ```
 
+### Markup - Separation of Concerns
+
 Referencing the anchor markup above, you'll see we have a **separation of style 
 and interaction** in the form of a CSS prefixed class and a JS prefixed class.
 This does a couple things for us. One, it allows us to change the CSS class
@@ -68,7 +83,7 @@ to a node unless it's being styled.
 
 Another thing to note is the naming convention of the CSS & JS classes.
 
-### Markup Styling Classes
+### Markup - Styling Classes
 
 Utilizes a modified BEM sytax. `namespace` is the component name so
 something like `chat-module`. `name-of-class` would be the current element,
@@ -80,12 +95,29 @@ be `verb--adjective` or `namespace--verb--adjective` (depending on whether or
 not you have global modifiers setup that you don't want to conflict with). Some
 examples would be `is--hidden`, `has--error`, or `was--successful`.
 
-### Markup Javascript Selectors
+### Markup - Javascript Selectors
 
 The class will be prefixed by `js-` and words will be treated like a JS variable 
 to further set it apart from a class utilized for styling `js-namespaceNameOfClass`.
 Using the class from the CSS example above, it's JS equivalent would be
 `js-chatModuleCtaBtn`.
+
+### Markup - Accessing Data From a Child Context
+
+- If you're trying to access data from the root template context, just use `@root.prop.value`
+- If you're in an `each` block helper, you can do this
+
+```
+{{#each items as |$item|}}
+  <div data-fu="{{value}}"></div>
+  {{#each buttons}}
+    <button data-fu="{{$item.value}}">{{name}}</button>
+  {{/each}}
+{{/each}}
+```
+
+The preceding `$` is just a way for people to know that it's an aliased variable, 
+and so that there's no conflicts with internal context's properties.
 
 ---
 
