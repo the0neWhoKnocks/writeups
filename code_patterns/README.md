@@ -132,8 +132,8 @@ My preferred pre-processor is [Stylus](https://learnboost.github.io/stylus/), bu
 we use [SCSS](http://sass-lang.com/) at my job. So you can reference [this file](css/ExampleClass.scss) 
 for the below examples.
 
-Setting up a file in the manor I've done takes a little extra thought, but as
-everything in this dock, it's about maintainability. All styling classes are
+Setting up a file in the manner I've done takes a little extra thought, but as
+everything in this doc, it's about maintainability. All styling classes are
 built out dynamically. There was an argument that it made it harder to find a 
 specific class such as `.namespace__some-element` because it's actually broken
 out into something like below.
@@ -176,8 +176,8 @@ parent element, the above styling would look like this.
 
 Modifiers are used to describe the state of an element. Modifiers are the only 
 thing JS should be adding or removing during a user session. So classes,
-anything following this syntax `.namespace__element` are for base styling. 
-Anything following this syntax `.namespace--verb--adjective` are a modifier
+anything following this syntax `.namespace__element`, are for base styling. 
+Anything following the syntax `.namespace--verb--adjective` is a modifier
 describing the state of an element.
 
 For modifiers it's best to use at least a two word descriptor. Something along
@@ -193,7 +193,7 @@ uses one hyphen for word separation.
 For javascript, [the example I've included](js/ExampleClass.js) uses ES6, but 
 can easily be translated to the ES5 prototypical Class pattern. You'll see in
 the example that jQuery is utilized for DOM manipulation. Vanilla JS can be
-used to achieve a majority of what I cover. If it can't I'll show how it
+used to achieve a majority of what I cover. If it can't, I'll show how it
 should be handled with a jQuery/vanilla comparison.
 
 Going forward whenever I refer to `module` it'll be synonymous with
@@ -204,7 +204,7 @@ Class, plugin, component, or widget.
 
 When creating a module you'll want to make sure it's extensible and it's easy
 for a dev to override properties or methods. I can't count how many times I've
-tried to implmement a module and there's been an inaccesible property or
+tried to implement a module and there's been an inaccesible property or
 method that bascially causes us to deviate from the base code just to get an
 experience to work, which in turn leads to code disparity.
 
@@ -216,7 +216,7 @@ accomplish the same result.
 
 #### Semantics
 
-Make you're code easy to understand with semantic method and variable names. For
+Make your code easy to understand with semantic method and variable names. For
 example, if you have a function that starts a countdown.
 
 ```javascript
