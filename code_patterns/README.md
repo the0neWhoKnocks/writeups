@@ -681,3 +681,120 @@ If you want to skip something from running you can add `.skip` to either a
 `describe` or an `it`.
 
 If you want to run just one test you can add `.only` to a `describe` or an `it`.
+
+#### How the F*** do I test window.location?
+
+You'll have to use a proxy function for all `location` calls
+
+```
+// `namespace` is just an Object that your proxy `window` Object lives under.
+
+namespace.window = {
+  get location(){
+    var locObj = {};
+
+    for(var prop in window.location){
+      if( window.location.hasOwnProperty(prop) ){
+        var propVal = window.location[prop];
+
+        switch(typeof propVal){
+          case 'function' :
+            locObj[prop] = function(){
+              window.location[prop]();
+            };
+            break;
+
+          case 'object' :
+          case 'string' :
+            Object.defineProperty(locObj, prop, {
+              get: function(){
+                return window.location[this];
+              }.bind(prop),
+              set: function(val){
+                window.location[this] = val;
+              }.bind(prop)
+            });
+            break;
+        }
+      }
+    }
+
+    return locObj;
+  },
+  
+  set location(val){
+    window.location = val;
+  }
+};
+```
+
+Usage of the above method would be
+
+```
+// instead of `window.location.href` or `location.href`, you'd use
+namespace.window.location.href;
+```
+
+Then in your test `bootstrap` you'll have to stub out the Object since the above
+loop doesn't pick up all properties due to something within Karma.
+
+```
+var emptyFn = function(){};
+var locationProps = {
+  ancestorOrigins: {},
+  assign: namespace.emptyFn,
+  hash: window.location.hash,
+  host: window.location.host,
+  hostname: window.location.hostname,
+  href: window.location.href,
+  origin: window.location.origin,
+  pathname: window.location.pathname,
+  port: window.location.port,
+  protocol: window.location.protocol,
+  reload: namespace.emptyFn,
+  replace: namespace.emptyFn,
+  search: window.location.search
+};
+namespace.window = {
+  get location(){
+    return locationProps;
+  },
+
+  set location(url){
+    // if the URL doesn't start with a `http`, `https`, or `//`, append it to the current origin
+    if( !/^(?:https?:)?\/\//.test(url) ){
+      url = locationProps.origin +'/'+ url;
+    }
+    // if the URL starts with just `//` then prepend the current protocol
+    if( /^\/\//.test(url) ){
+      url = locationProps.protocol + url;
+    }
+
+    locationProps.hash = '#'+ url.split('#')[1];
+    locationProps.host = url.match(/:\/\/([^/]+)/)[1];
+    locationProps.hostname = url.match(/:\/\/([^/]+)/)[1];
+    locationProps.href = url;
+    locationProps.origin = url.match(/^(https?:\/\/[^/]+)/)[1];
+    locationProps.pathname = url.match(/^https?:\/\/[^/]+\/([^?#]+)/)[1];
+    locationProps.port = url.match(/(:[^/]+)/)[1];
+    locationProps.protocol = url.match(/^https?/)[0];
+    locationProps.search = '?'+ url.split('#')[0].split('?');
+  }
+};
+```
+
+Now in your tests, you can write something like this
+
+```
+// in your code
+namespace.window.location = 'http://somenewdomain.com';
+namespace.window.reload();
+
+// in your test
+var reloadSpy = sandbox.spy(namespace.window.location, 'reload');
+
+...
+
+reloadSpy.should.be.called;
+expect( namespace.window.location.origin ).to.equal( 'http://somenewdomain.com' );
+```
