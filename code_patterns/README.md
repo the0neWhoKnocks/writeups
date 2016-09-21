@@ -789,6 +789,9 @@ namespace.window = {
   },
 
   set location(url){
+    var pathname = url.match(/^https?:\/\/[^/]+\/([^?#]+)/);
+    var port = url.match(/(:[^/]+)/);
+    
     // if the URL doesn't start with a `http`, `https`, or `//`, append it to the current origin
     if( !/^(?:https?:)?\/\//.test(url) ){
       url = locationProps.origin +'/'+ url;
@@ -803,8 +806,8 @@ namespace.window = {
     locationProps.hostname = url.match(/:\/\/([^/]+)/)[1];
     locationProps.href = url;
     locationProps.origin = url.match(/^(https?:\/\/[^/]+)/)[1];
-    locationProps.pathname = url.match(/^https?:\/\/[^/]+\/([^?#]+)/)[1];
-    locationProps.port = url.match(/(:[^/]+)/)[1];
+    locationProps.pathname = pathname ? pathname[1] : '';
+    locationProps.port = port ? port[1] : '';
     locationProps.protocol = url.match(/^https?/)[0];
     locationProps.search = '?'+ url.split('#')[0].split('?');
   }
