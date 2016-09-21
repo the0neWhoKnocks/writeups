@@ -1,7 +1,7 @@
 # Code Grammar
 
-I work in a large corparate environment with a lot of moving parts. During my
-years there a workflow was developed when dealing with HTML, JS & CSS that allows
+I work in a large corporate environment with a lot of moving parts. During my
+years there a work flow was developed when dealing with HTML, JS & CSS that allows
 for quick iteration, and easy extensibility which allows for quick spin up time for 
 new devs and a fundamental understanding of what's going on in the codebase.
 
@@ -78,21 +78,21 @@ This does a couple things for us. One, it allows us to change the CSS class
 name if a refactor is required without the added worry of breaking any JS
 interactions. And two, it tells us that the DOM node is being utilized by JS 
 for some sort of interaction. There is no need to add a JS class to a node 
-unlesss it's being used by JS, just like there's no need to add a CSS class 
+unless it's being used by JS, just like there's no need to add a CSS class 
 to a node unless it's being styled.
 
 Another thing to note is the naming convention of the CSS & JS classes.
 
 ### Markup - Styling Classes
 
-Utilizes a modified BEM sytax. `namespace` is the component name so
+Utilizes a modified BEM syntax. `namespace` is the component name so
 something like `chat-module`. `name-of-class` would be the current element,
 something like `cta-btn`. Combined they'd be `chat-module__cta-btn`. Ideally
 you'll only have one level per class. A level is defined by the two underscores.
 
 For modifiers (classes that describe the state of an element), the format would
 be `verb--adjective` or `namespace--verb--adjective` (depending on whether or 
-not you have global modifiers setup that you don't want to conflict with). Some
+not you have global modifiers set-up that you don't want to conflict with). Some
 examples would be `is--hidden`, `has--error`, or `was--successful`.
 
 ### Markup - Javascript Selectors
@@ -204,14 +204,14 @@ Class, plugin, component, or widget.
 
 When creating a module you'll want to make sure it's extensible and it's easy
 for a dev to override properties or methods. I can't count how many times I've
-tried to implement a module and there's been an inaccesible property or
-method that bascially causes us to deviate from the base code just to get an
+tried to implement a module and there's been an inaccessible property or
+method that basically causes us to deviate from the base code just to get an
 experience to work, which in turn leads to code disparity.
 
 In the code example you'll see the module allows for an `opts` (or options)
 argument. All default module properties are set, and then overridden by the
 `opts` via `Object.assign(this, opts);`. `Object.assign` is new to ES6,
-you can use a recursive loop, jQuery's `extend`, or lodashes `merge` to
+you can use a recursive loop, jQuery's `extend`, or lodash's `merge` to
 accomplish the same result.
 
 #### Semantics
@@ -466,7 +466,7 @@ this.eventSuffix = '.'+ this.namespace;
 
 What does something like this give us? There have been times in the
 past where myself & others have made the simple mistake of not adding
-a `.` for JS selectors, or adding a `.` for CSS classes and waisting
+a `.` for JS selectors, or adding a `.` for CSS classes and wasting
 time trying to figure out why an experience isn't functioning as expected.
 Setting up prefixes & suffixes allows us to then do something like this.
 
@@ -488,7 +488,7 @@ this.els = {
 };
 ```
 
-There are a few key take-aways from the code snippet above.
+There are a few key takeaways from the code snippet above.
 
 **Name Propagation** - Lets say a refactor occurs and you change a piece
 of markup to something different. For example the `nav-item`'s become `ui-item`'s.
@@ -609,6 +609,20 @@ it("should fire some events and setup a button", function(){
 it("shouldn't fire functionName", function(){
 ```
 
+For readability, this format works best. The comments are not necessary, they're 
+just there to demonstrate what each block is.
+```javascript
+// vars / data setup
+var someVal = 'test';
+var someSpy = sandbox.spy(namespace.obj, 'funcName');
+
+// function call
+myClass.funcName(someVal);
+promise.resolve();
+
+// test assertions
+someSpy.should.be.calledWith(someVal);
+```
 
 #### Sinon API
 
