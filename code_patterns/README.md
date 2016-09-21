@@ -633,6 +633,8 @@ Use `.should.deepEqual(OBJ)` for Objects or Arrays.
 Sometimes you want to verify that something is `null` or `undefined`, in that
 case you'd use `expect( func('fu') ).to.be.undefined`.
 
+#### When to use stubs or spies
+
 Use a `spy` when:
 - You want to check if a function is called.
 ```javascript
@@ -658,13 +660,16 @@ funcStub.should.be.called;
 funcStub.should.be.calledWith(arg, arg2);
 ```
 
+#### How to check if a test was called with a specific signature
+
 There are times with `spy`'s or `stub`'s that you want to ensure a function call
 has a specific signature, but the args may be dynamic. In those cases you'll
 use the [match API](http://sinonjs.org/docs/#matchers).
 ```javascript
 funcStub.should.be.calledWith(sinon.match.string, sinon.match.func);
 ```
-Or maybe you want to test that it was called with a specific property of an Object.
+
+Maybe you want to test that it was called with a specific property of an Object.
 ```javascript
 // called with the below Object
 var obj = {
@@ -676,6 +681,8 @@ funcStub.should.be.calledWith(sinon.match({fu:'bar'}));
 // or
 funcStub.should.be.calledWith(sinon.match.hasOwn('fu', 'bar'));
 ```
+
+#### How to travel through time in your tests
 
 Sometimes you need to travel forward in time like when `setTimeout` is used. In 
 that case you'll want to use the [clock API](http://sinonjs.org/docs/#clock).
@@ -695,6 +702,8 @@ afterEach(function(){
   
   callbackSpy.should.be.called;
 ```
+
+#### How to debug your tests
 
 If you want to skip something from running you can add `.skip` to either a
 `describe` or an `it`.
