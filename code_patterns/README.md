@@ -665,10 +665,15 @@ use the [match API](http://sinonjs.org/docs/#matchers).
 funcStub.should.be.calledWith(sinon.match.string, sinon.match.func);
 ```
 Or maybe you want to test that it was called with a specific property of an Object.
-```
+```javascript
 // called with the below Object
-var obj = {fu:'bar'};
+var obj = {
+  fu: 'bar',
+  blah: 123
+};
 
+funcStub.should.be.calledWith(sinon.match({fu:'bar'}));
+// or
 funcStub.should.be.calledWith(sinon.match.hasOwn('fu', 'bar'));
 ```
 
