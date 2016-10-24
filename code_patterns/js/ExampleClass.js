@@ -75,9 +75,28 @@ class ExampleClass {
     this.events = {
       CLICK: 'click'+ this.eventSuffix
     };
+    /**
+     * Random prop, nothing to see here, move along.
+     * @type {boolean}
+     */
+    this.randomProp = true;
+    /**
+     * A map of urls.
+     * @type {Object}
+     */
+    this.urls = {
+      NAV_ITEM: 'http://example.com/api/v1/is/fake'
+    };
+    /**
+     * How long to wait before displaying an error.
+     * @type {Number}
+     */
+    this.errorWait = 1000;
 
     // override defaults with user opts
     Object.assign(this, opts);
+    
+    this.init();
   }
 
   /**
@@ -97,8 +116,56 @@ class ExampleClass {
           url: 'http://example.com',
           label: 'Example'
         }
-      ]
+      ],
+      props: {
+        fu: this.randomProp,
+        unimportant: true
+      }
     }));
     this.els.$navItems = this.els.$shell.find( this.selectors.NAV_ITEM );
+    this.addListeners();
+  }
+  
+  /**
+   * Adds listeners to component elements.
+   */
+  addListeners(){
+    $('body').on(this.events.CLICK, this.selectors.NAV_ITEM, this.handleNavItemClick.bind(this));
+  }
+  
+  /**
+   * Handles the click of a nav item.
+   *
+   * @param {event} ev - Click event
+   */
+  handleNavItemClick(ev){
+    $.ajax({
+      url: this.urls.NAV_ITEM,
+      data: {
+        fu: 'bar'
+      }
+    })
+    .done(this.handleNavItemSuccess.bind(this))
+    .fail(this.handleNavItemFailure.bind(this));
+  }
+  
+  /**
+   * Handles the success response from the service.
+   *
+   * @param {object} resp - The JSON response from the service.
+   */
+  handleNavItemSuccess(resp){
+    console.log( JSON.parse(resp) );
+  }
+  
+  /**
+   * Handles the failure response from the service.
+   *
+   * @param {*} resp - Whatever the service or server gave us.
+   */
+  handleNavItemFailure(resp){
+    setTimeout(function(){
+      console.error( resp );
+    }, this.errorWait);
   }
 }
